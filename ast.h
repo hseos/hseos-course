@@ -29,7 +29,7 @@ int Eval(AstNode* node) {
     case PLUS:
         return Eval(node->left.get()) + Eval(node->right.get());
     case MINUS:
-        return Eval(node->left.get()) - Eval(node->right.get());
+        return Eval(node->left.get()) - Eval(node->right->right.get());
     case MULTIPLY:
         return Eval(node->left.get()) * Eval(node->right.get());
     case DIVIDE:
@@ -80,7 +80,7 @@ std::unique_ptr<AstNode> Parse(const std::string& line) {
         node->value = strtol(line.c_str(), &endp, 10);
 
         if (line.empty() || *endp != '\0')
-            throw std::runtime_error("invalid number: '" + line + "'");
+            throw std::runtime_error("invalid number '" + line + "'");
     } else {
         node->left = Parse(left);
         node->right = Parse(right);
