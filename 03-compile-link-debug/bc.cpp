@@ -1,6 +1,10 @@
-#include <iostream>
-
 #include "ast.h"
+
+#include <cassert>
+#include <cstdlib>
+#include <iostream>
+#include <stdexcept>
+#include <string>
 
 int Eval(AstNode* node) {
     switch(node->type) {

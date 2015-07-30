@@ -2,12 +2,7 @@
 #ifndef AST_H
 #define AST_H
 
-#include <stdlib.h>
-#include <assert.h>
-
 #include <memory>
-#include <string>
-#include <stdexcept>
 
 enum AstNodeType {
     CONST,
