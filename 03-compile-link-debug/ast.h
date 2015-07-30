@@ -1,4 +1,6 @@
 #pragma once
+#ifndef AST_H
+#define AST_H
 
 #include <stdlib.h>
 #include <assert.h>
@@ -21,3 +23,5 @@ public:
     int value;
     std::unique_ptr<AstNode> left, right;
 };
+
+#endif  // AST_H
