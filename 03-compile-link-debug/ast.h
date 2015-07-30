@@ -9,13 +9,14 @@ enum AstNodeType {
     PLUS,
     MINUS,
     MULTIPLY,
-    DIVIDE
+    DIVIDE,
+    UNKNOWN = 255
 };
 
 class AstNode {
 public:
-    AstNodeType type;
-    int value;
+    AstNodeType type = UNKNOWN;
+    int value = 0;
     std::unique_ptr<AstNode> left, right;
 };
 
