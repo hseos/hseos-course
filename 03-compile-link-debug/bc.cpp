@@ -6,7 +6,7 @@
 #include <stdexcept>
 #include <string>
 
-int Eval(AstNode* node) {
+int Eval(const AstNode* node) {
     switch(node->type) {
     case CONST:
         return node->value;
@@ -28,8 +28,8 @@ void Strip(std::string* line) {
     while(!line->empty() && line->front() == ' ') line->erase(line->begin());
 }
 
-bool Split(const std::string& line, char symbol, std::string* left, std::string* right) {
-    size_t symbol_pos = line.rfind(symbol);
+bool Split(const std::string& line, const char symbol, std::string* left, std::string* right) {
+    const size_t symbol_pos = line.rfind(symbol);
     if (symbol_pos != std::string::npos) {
         *left = line.substr(0, symbol_pos);
         *right = line.substr(symbol_pos + 1);
