@@ -1,23 +1,23 @@
 #pragma once
-
-#include <stdlib.h>
-#include <assert.h>
+#ifndef AST_H
+#define AST_H
 
 #include <memory>
-#include <string>
-#include <stdexcept>
 
 enum AstNodeType {
     CONST,
     PLUS,
     MINUS,
     MULTIPLY,
-    DIVIDE
+    DIVIDE,
+    UNKNOWN = 255
 };
 
 class AstNode {
 public:
-    AstNodeType type;
-    int value;
+    AstNodeType type = UNKNOWN;
+    int value = 0;
     std::unique_ptr<AstNode> left, right;
 };
+
+#endif  // AST_H
