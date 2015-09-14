@@ -310,7 +310,7 @@ gdbserver /dev/ttyS0 ./firmware
 
 ## Задание
 
-0. Склонируйте репозиторий https://github.com/hseos/hseos-course/tree/master/03-compile-link-debug.
+0. Склонируйте курса: `git clone https://github.com/hseos/hseos-course.git`. В этом задании нам понадобится содержимое каталога `03-compile-link-debug`.
 
 1. В файле `bc.cpp` реализован калькулятор арифметических выражений. Он представляет из себя простой REPL.
   Сначала по входной строке строится дерево разбора (функция `Parse()`), затем это дерево вычислется (фукция `Eval()`).
