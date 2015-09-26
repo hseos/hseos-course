@@ -5,7 +5,7 @@
 Мы будем использовать AT&T синтаксис для записи инструкций ассемблера x86. Для компиляции программ будем использовать gas,
 а точнее gcc.
 ```
-gcc prog.S -o prog
+gcc -m32 prog.S -o prog
 ```
 
 Исходный файл с программой на ассемблере должен иметь суффикс .S. Файл будет обрабатываться препроцессором, затем ассемблером.
@@ -66,20 +66,20 @@ LABEL:  OPCODE  ARGS
 ## Некоторые инструкции
 
 ```
-        addl    SRC, DST        ; DST += SRC
-        subl    SRC, DST        ; DST -= SRC
-        incl    DST             ; ++DST
-        decl    DST             ; --DST
-        negl    DST             ; DST = -DST
-        movl    SRC, DST        ; DST = SRC
-        imull   SRC             ; (%eax,%edx) = %eax * SRC - знаковое
-        mull    SRC             ; (%eax,%edx) = %eax * SRC - беззнаковое
-        andl    SRC, DST        ; DST &= SRC
-        orl     SRC, DST        ; DST |= SRC
-        xorl    SRC, DST        ; DST ^= SRC
-        notl    DST             ; DST = ~DST
-        cmpl    SRC, DST        ; DST - SRC, результат не сохраняется,
-        testl   SRC, DST        ; DST & SRC, результат не сохраняется
+        addl    SRC, DST        // DST += SRC
+        subl    SRC, DST        // DST -= SRC
+        incl    DST             // ++DST
+        decl    DST             // --DST
+        negl    DST             // DST = -DST
+        movl    SRC, DST        // DST = SRC
+        imull   SRC             // (%eax,%edx) = %eax * SRC - знаковое
+        mull    SRC             // (%eax,%edx) = %eax * SRC - беззнаковое
+        andl    SRC, DST        // DST &= SRC
+        orl     SRC, DST        // DST |= SRC
+        xorl    SRC, DST        // DST ^= SRC
+        notl    DST             // DST = ~DST
+        cmpl    SRC, DST        // DST - SRC, результат не сохраняется,
+        testl   SRC, DST        // DST & SRC, результат не сохраняется
         adcl    SRC, DST        ; DST += SRC + CF
         sbbl    SRC, DST        ; DST -= SRC - CF
 ```
@@ -90,8 +90,8 @@ LABEL:  OPCODE  ARGS
 ## Вызов/возврат из подпрограмм
 
 ```
-        call    label           ; вызов подпрограммы
-        ret                     ; возврат из подпрограммы
+        call    label           // вызов подпрограммы
+        ret                     // возврат из подпрограммы
 ```
 
 ## Ввод-вывод
@@ -101,15 +101,15 @@ LABEL:  OPCODE  ARGS
 Простейшая программа на ассемблере будет выглядеть так:
 ```
 #include "simpleio.S"
-        .text           ; секция кода программы
-        .global main    ; экспортируем точку входа - функцию main
+        .text           // секция кода программы
+        .global main    // экспортируем точку входа - функцию main
 main:
-        call    finish  ; вызываем подпрограмму finish: exit(0)
+        call    finish  // вызываем подпрограмму finish: exit(0)
 ```
 
 Чтение целого числа со стандартного потока ввода:
 ```
-        ; фрагмент программы
+        // фрагмент программы
         call    readi32
 ```
 По возращению в регистре `%eax` находится считанное число. Если произошла
@@ -172,20 +172,20 @@ main:
 
 Условные переходы проверяют комбинации арифметических флагов:
 ```
-        jz      label   ; переход, если равно (нуль), ZF == 1
-        jnz     label   ; переход, если не равно (не нуль), ZF == 0
-        jc      label   ; переход, если CF == 1
-        jnc     label   ; переход, если CF == 0
-        jo      label   ; переход, если OF == 1
-        jno     label   ; переход, если OF == 0
-        jg      label   ; переход, если больше для знаковых чисел
-        jge     label   ; переход, если >= для знаковых чисел
-        jl      label   ; переход, если < для знаковых чисел
-        jle     label   ; переход, если <= для знаковых чисел
-        ja      label   ; переход, если > для беззнаковых чисел
-        jae     label   ; переход, если >= (беззнаковый)
-        jb      label   ; переход, если < (беззнаковый)
-        jbe     label   ; переход, если <= (беззнаковый)
+        jz      label   // переход, если равно (нуль), ZF == 1
+        jnz     label   // переход, если не равно (не нуль), ZF == 0
+        jc      label   // переход, если CF == 1
+        jnc     label   // переход, если CF == 0
+        jo      label   // переход, если OF == 1
+        jno     label   // переход, если OF == 0
+        jg      label   // переход, если больше для знаковых чисел
+        jge     label   // переход, если >= для знаковых чисел
+        jl      label   // переход, если < для знаковых чисел
+        jle     label   // переход, если <= для знаковых чисел
+        ja      label   // переход, если > для беззнаковых чисел
+        jae     label   // переход, если >= (беззнаковый)
+        jb      label   // переход, если < (беззнаковый)
+        jbe     label   // переход, если <= (беззнаковый)
 ```
 
 ## Секции исполняемого файла
