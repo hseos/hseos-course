@@ -2,13 +2,6 @@
 
 Основное чтение: Р. Э. Брайант, Д. Р. О'Халларон. Компьютерные системы: архитектура и программирование. Глава 3.
 
-Дополнительное чтение: 
-
-1. [Вики-учебник "Ассемблер в Linux для программистов C"](https://ru.wikibooks.org/wiki/%D0%90%D1%81%D1%81%D0%B5%D0%BC%D0%B1%D0%BB%D0%B5%D1%80_%D0%B2_Linux_%D0%B4%D0%BB%D1%8F_%D0%BF%D1%80%D0%BE%D0%B3%D1%80%D0%B0%D0%BC%D0%BC%D0%B8%D1%81%D1%82%D0%BE%D0%B2_C).
-
-2. Учебное пособие для курса ВМК "Архитектура ЭВМ и язык 
-ассемблера": [часть 1](http://asmcourse.cs.msu.ru/wp-content/uploads/2015/03/asm-ucebnice-1.pdf), [часть 2](http://asmcourse.cs.msu.ru/wp-content/uploads/2015/02/asm-ucebnice-2.pdf).
-
 Мы будем использовать AT&T синтаксис для записи инструкций ассемблера x86. Для компиляции программ будем использовать gas,
 а точнее gcc.
 ```
@@ -280,3 +273,12 @@ str1:   .asciz  "Hello, there\n"
         movl    -64(%ebp,%esi,4),%eax // в регистр %eax записать значение,
                                       // расположенное по адресу %ebp - 64 + %esi * 4
 ```
+
+Дополнительное чтение: 
+
+1. [Вики-учебник "Ассемблер в Linux для программистов C"](https://ru.wikibooks.org/wiki/%D0%90%D1%81%D1%81%D0%B5%D0%BC%D0%B1%D0%BB%D0%B5%D1%80_%D0%B2_Linux_%D0%B4%D0%BB%D1%8F_%D0%BF%D1%80%D0%BE%D0%B3%D1%80%D0%B0%D0%BC%D0%BC%D0%B8%D1%81%D1%82%D0%BE%D0%B2_C).
+
+2. Учебное пособие для курса ВМК "Архитектура ЭВМ и язык 
+ассемблера": [часть 1](http://asmcourse.cs.msu.ru/wp-content/uploads/2015/03/asm-ucebnice-1.pdf), [часть 2](http://asmcourse.cs.msu.ru/wp-content/uploads/2015/02/asm-ucebnice-2.pdf).
+
+3. [Материалы лекций курса ВМК "Архитектура ЭВМ и язык ассемблера"](http://asmcourse.cs.msu.ru/?page_id=1251)
