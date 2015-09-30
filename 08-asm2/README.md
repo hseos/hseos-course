@@ -17,7 +17,7 @@ int val = read(0, &c, sizeof(c));
 
 соответствующий фрагмент программы на ассемблере будет выглядеть следующим образом:
 ```
-#include <sys/unistd_32.h>
+#include <asm/unistd_32.h>
         .data
 c:      .byte   0
         .text
@@ -35,6 +35,14 @@ c:      .byte   0
         movl    $__NR_exit, %eax
         xorl    %ebx, %ebx
         int     $0x80
+```
+
+если файл `<asm/unistd_32.h>` недоступен, можно использовать численные значения:
+```
+#define __NR_exit 1
+#define __NR_fork 2
+#define __NR_read 3
+#define __NR_write 4
 ```
 
 ## Стандартное соглашение о передаче параметров
