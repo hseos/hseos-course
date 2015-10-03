@@ -6,23 +6,18 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <sys/time.h>
-#include <errno.h>
-#include <string.h>
-#include <stdint.h>
 
 int main(int argc, char *argv[])
 {
+    int page = strtoll(argv[2], NULL, 0);
     int pagesize = getpagesize();
     printf("page size: %d\n", pagesize);
+    off_t offset = (off_t) page * pagesize;
 
-    //int fd = open(argv[1], O_RDWR, 0);
-    //printf("fd: %d\n", fd);
+    int fd = open(argv[1], O_RDWR, 0);
+    printf("fd: %d\n", fd);
     void *mp = mmap(NULL, pagesize, PROT_READ | PROT_WRITE,
-                    MAP_ANONYMOUS | MAP_SHARED, 0, 0);
-    if (!~(intptr_t) mp) {
-        fprintf(stderr, "%s\n", strerror(errno));
-        return 1;
-    }
+                    MAP_PRIVATE, fd, offset);
     printf("ptr: %p\n", mp);
     printf("pid: %d\n", getpid());
     int *data = mp;
