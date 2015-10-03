@@ -7,6 +7,18 @@
 #include <unistd.h>
 #include <sys/time.h>
 
+/*
+пример использования mmap в режиме MAP_PRIVATE
+изменения в одном процессе не будут видны в других процессах
+обратите внимание, что файл открыт O_RDONLY, а mmap выполняется
+с правами PROT_READ | PROT_WRITE
+ */
+
+/*
+использование ./mmap1 FILE PAGE
+FILE - имя файла
+PAGE - номер страницы в файле, с которой будем работать
+ */
 int main(int argc, char *argv[])
 {
     int page = strtoll(argv[2], NULL, 0);

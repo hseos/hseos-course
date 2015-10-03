@@ -10,16 +10,23 @@
 #include <string.h>
 #include <stdint.h>
 
+/*
+пример использования mmap в режиме MAP_ANONYMOUS | MAP_PRIVATE
+будет создан сыновний процесс, родитель и сын будут работать
+со своими данными
+ */
+
+/*
+использование ./mmap4
+ */
 int main(int argc, char *argv[])
 {
     int pagesize = getpagesize();
     printf("page size: %d\n", pagesize);
 
-    //int fd = open(argv[1], O_RDWR, 0);
-    //printf("fd: %d\n", fd);
     void *mp = mmap(NULL, pagesize, PROT_READ | PROT_WRITE,
                     MAP_ANONYMOUS | MAP_PRIVATE, 0, 0);
-    if (!~(intptr_t) mp) {
+    if (mp == MAP_FAILED) {
         fprintf(stderr, "%s\n", strerror(errno));
         return 1;
     }

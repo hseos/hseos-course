@@ -7,6 +7,17 @@
 #include <unistd.h>
 #include <sys/time.h>
 
+/*
+пример использования mmap в режиме MAP_SHARED
+можно запустить параллельно несколько процессов, они
+будут видеть изменения других процессов
+ */
+
+/*
+использование ./mmap1 FILE PAGE
+FILE - имя файла
+PAGE - номер страницы в файле, с которой будем работать
+ */
 int main(int argc, char *argv[])
 {
     int page = strtoll(argv[2], NULL, 0);
