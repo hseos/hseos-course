@@ -6,11 +6,14 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <sys/time.h>
+#include <errno.h>
+#include <string.h>
 
 /*
 пример использования mmap в режиме MAP_SHARED
-можно запустить параллельно несколько процессов, они
-будут видеть изменения других процессов
+файл открыт в режиме "только для чтения",
+а mmap пытается подключить его как "чтение-запись",
+mmap завершится с ошибкой EPERM - Permission denied
  */
 
 /*
@@ -27,8 +30,11 @@ int main(int argc, char *argv[])
 
     int fd = open(argv[1], O_RDONLY, 0);
     printf("fd: %d\n", fd);
-    void *mp = mmap(NULL, pagesize, PROT_READ | PROT_WRITE,
-                    MAP_SHARED, fd, offset);
+    void *mp = mmap(NULL, pagesize, PROT_READ | PROT_WRITE, MAP_SHARED, fd, offset);
+    if (mp == MAP_FAILED) {
+        fprintf(stderr, "%s\n", strerror(errno));
+        return 1;
+    }
     printf("ptr: %p\n", mp);
     printf("pid: %d\n", getpid());
     int *data = mp;

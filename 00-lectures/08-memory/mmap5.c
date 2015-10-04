@@ -28,8 +28,7 @@ int main(int argc, char *argv[])
 
     int fd = open(argv[1], O_RDONLY, 0);
     printf("fd: %d\n", fd);
-    void *mp = mmap(NULL, pagesize, PROT_READ | PROT_WRITE,
-                    MAP_PRIVATE, fd, offset);
+    void *mp = mmap(NULL, pagesize, PROT_READ | PROT_WRITE, MAP_PRIVATE, fd, offset);
     printf("ptr: %p\n", mp);
     printf("pid: %d\n", getpid());
     int *data = mp;

@@ -24,8 +24,7 @@ int main(int argc, char *argv[])
     int pagesize = getpagesize();
     printf("page size: %d\n", pagesize);
 
-    void *mp = mmap(NULL, pagesize, PROT_READ | PROT_WRITE,
-                    MAP_ANONYMOUS | MAP_PRIVATE, 0, 0);
+    void *mp = mmap(NULL, pagesize, PROT_READ | PROT_WRITE, MAP_ANONYMOUS | MAP_PRIVATE, 0, 0);
     if (mp == MAP_FAILED) {
         fprintf(stderr, "%s\n", strerror(errno));
         return 1;
