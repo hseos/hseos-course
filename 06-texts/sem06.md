@@ -13,17 +13,17 @@
 
 Выделение и освобождение памяти в Си++:
 
-* `оператор T* new T(...)` - выделяет память для хранения
+* оператор `T* new T(...)` - выделяет память для хранения
 для хранения объекта типа `T` и инициализирует его
 
-* `оператор delete pointer` - освобождает память,
+* оператор `delete pointer` - освобождает память,
 выделенную ранее оператором `new`
 
-* `оператор T* new T[n_items]` - выделяет память для
+* оператор `T* new T[n_items]` - выделяет память для
 хранения `n_items` экземпляров объекта типа `T` и
 инициализирует их
 
-* `оператор delete[] pointer` - освобождает память,
+* оператор `delete[] pointer` - освобождает память,
 выделенную ранее оператором `new[]`
 
 Рекомендуется всегда использовать `new`/`delete` вместо
@@ -41,7 +41,7 @@
 
 Пример:
 
-```
+```c++
 char* array_of_chars = new char[3];
 
 * array_of_chars      = '0';
@@ -58,7 +58,7 @@ char* array_of_chars = new char[3];
 
 Пример:
 
-```
+```c++
 int32_t* array_of_ints = new int32_t[3];
 
 int32_t*  first_ptr = array_of_ints;
@@ -81,7 +81,7 @@ assert( 8 == uintptr_t( third_ptr) - uintptr_t(first_ptr) );
 указатель, будет интерпретировано по-другому.
 
 
-```
+```c++
 float    f = 1.05;
 int32_t  i = (int32_t) f; // i = 1; отброшена дробная часть
 
@@ -102,7 +102,7 @@ i = *i_ptr; // i = 1065772646
 Аналогичным оператором в языке C++ является `reinterpret_cast`.
 
 
-```
+```c++
 float    f = 1.05;
 int32_t  i = static_cast<int32_t>(f);
 // i = 1; отброшена дробная часть
@@ -189,11 +189,11 @@ i = *i_ptr; // i = 1065772646
 
 Указатель на символ (`char *`) определяет адрес первого
 символа в строке. Все остальные символы могут быть получены
-инкрементом (эквивалентно - оператором `[`) этого указателя
+инкрементом (эквивалентно - оператором `[]`) этого указателя
 на заданное смещение.
 
 
-```
+```c++
 static const char * Hello = "Hello, World!";
 
 char first  = *Hello;        // first  = 'H'
@@ -209,7 +209,7 @@ char nullval= Hello[13];     // nullval = 0;
 указателем на следующий символ.
 
 
-```
+```c++
 static const char * Hello = "Hello";
 
 for ( const char * substring = Hello;
@@ -241,7 +241,7 @@ o
 необходимо писать `const` после символа `*`.
 
 
-```
+```c++
 const char * immutable_string    = "You can't modify me!";
 char * const immutable_pointer   = "Value can be changed, but pointer not";
 const char * const immutable_all = "Everything protected from changes";
@@ -255,7 +255,7 @@ const char * const immutable_all = "Everything protected from changes";
 указателю, а не по значению (поскольку строка - это всего
 лишь указатель на некоторую область в памяти).
 
-```
+```c++
 std::string source("I'm C++ string");
 std::string acopy = source;
 acopy[2] = 'd';
@@ -305,7 +305,7 @@ reference[2] = 'd';
 **Контрольный вопрос.** Какое число выведет приведенная
 ниже программа?
 
-```
+```c++
 #include <iostream>
 
 int main()
@@ -322,7 +322,7 @@ int main()
 за **линейное время**, поэтому желательно избегать её
 лишних вызовов.
 
-```
+```c++
 #include <cstring>
 #include <iostream>
 
@@ -360,7 +360,7 @@ int main()
 памяти под массив целых чисел получаются неинициализированные
 переменные, которые можно инициализировать с помощью `memset`.
 
-```
+```c++
 #include <iostream>
 #include <cstring>
 
@@ -430,7 +430,7 @@ int main()
 программа; б) вторая программа, если её вызвать с
 аргументом Hello! ?
 
-```
+```c++
 #include <iostream>
 
 int main()
@@ -445,7 +445,7 @@ int main()
 Hello1 и Hello2 - это один и тот же указатель из-за
 оптимизации размера кода -->
 
-```
+```c++
 #include <iostream>
 
 int main(int argc, char* argv[])
