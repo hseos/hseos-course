@@ -50,16 +50,239 @@ struct stat {
 Тип файла хранится в поле st_modeструктуры stat. Определить тип файла можно с помощью макроопределений, приведенных ниже 
 (Макросы для определения типа файла из  ```c <sys/stat.h> ```)
 
-S_ISREG() Обычный файл
-S_ISDIR() Каталог
-S_ISCHR() Специальный файл символьного устройства
-S_ISBLK() Специальный файл блочного устройства
-S_ISFIFO() Канал (именованный или неименованный)
-S_ISLNK() Символическая ссылка
-S_ISSOCK Сокет
+ * S_ISREG() Обычный файл
+ * S_ISDIR() Каталог
+ * S_ISCHR() Специальный файл символьного устройства
+ * S_ISBLK() Специальный файл блочного устройства
+ * S_ISFIFO() Канал (именованный или неименованный)
+ * S_ISLNK() Символическая ссылка
+ * S_ISSOCK Сокет
 
 ## Системный вызов access
 
 ## Работа с каталогами.
 
-opendir, readdir, closedir
+Создание каталогов производится с помощью функции mkdir, а удаление – с помощью функции rmdir.
+
+```
+#include <sys/stat.h>
+int mkdir(const char *pathname, mode_t mode); /* Возвращает 0 в случае успеха, –1 в случае ошибки*/
+```
+
+```
+#include <unistd.h>
+int rmdir(const char *pathname); /* Возвращает 0 в случае успеха, –1 в случае ошибки */
+```
+
+```
+#include <dirent.h>
+
+DIR *opendir(const char *pathname); //Возвращает указатель в случае успеха или NULL в случае ошибки.
+struct dirent *readdir(DIR *dp); // Возвращает указатель в случае успеха, NULL в случае достижения конца каталога или ошибки
+void rewinddir(DIR *dp); //Возвращает 0 в случае успеха или –1 в случае ошибки
+int closedir(DIR *dp); //Возвращает 0 в случае успеха или –1 в случае ошибки
+long telldir(DIR *dp); //Возвращает значение текущей позиции в каталоге, ассоциированном с dp
+void seekdir(DIR *dp, long loc);
+```
+Функции telldir и seekdir не являются частью стандарта POSIX.1. Это расширения XSI стандарта Single UNIX Specification – таким образом, предполагается, что они должны быть реализованы во всех версиях UNIX, следую
+щих этой спецификации.
+
+Структура dirent определена в файле <dirent.h> и зависит от конкретной реализации. Однако в любой версии UNIX эта структура содержит как минимум следующие два поля:
+```
+struct dirent {
+ino_t d_ino; /* номер индексного узла */
+char d_name[NAME_MAX + 1]; /* строка имени файла, завершающаяся нулевым символом */
+}
+```
+Пример: Рекурсивный обход деревакаталогов с подсчетом количества файлов по типам
+
+```
+#include "apue.h"
+#include <dirent.h>
+#include <limits.h>
+
+/* тип функции, которая будет вызываться для каждого встреченного файла */
+typedef int Myfunc(const char *, const struct stat *, int);
+
+static Myfunc myfunc;
+static int myftw(char *, Myfunc *);
+static int dopath(Myfunc *);
+
+static long nreg, ndir, nblk, nchr, nfifo, nslink, nsock, ntot;
+
+int main(int argc, char *argv[])
+{
+	int ret;
+	if (argc != 2)
+		err_quit("Использование: ftw <начальный_каталог>");
+	ret = myftw(argv[1], myfunc); /* выполняет всю работу */
+	ntot = nreg + ndir + nblk + nchr + nfifo + nslink + nsock;
+	if (ntot == 0)
+		ntot = 1;/* во избежание деления на 0; вывести 0 для всех счетчиков */
+	printf("обычные файлы = %7ld, %5.2f %%\n", nreg,nreg*100.0/ntot);
+	printf("каталоги = %7ld, %5.2f %%\n", ndir, ndir*100.0/ntot);
+	printf("специальные файлы блочных устройств = %7ld, %5.2f %%\n", nblk,nblk*100.0/ntot);
+	printf("специальные файлы символьных устройств = %7ld, %5.2f %%\n", nchr,nchr*100.0/ntot);
+	printf("FIFO = %7ld, %5.2f %%\n", nfifo,nfifo*100.0/ntot);
+	printf("символические ссылки = %7ld, %5.2f %%\n", nslink, nslink*100.0/ntot);
+	printf("сокеты = %7ld, %5.2f %%\n", nsock,nsock*100.0/ntot);
+	exit(ret);
+}
+
+/*
+* Обойти дерево каталогов, начиная с каталога "pathname".
+* Пользовательская функция func() вызывается для каждого встреченного файла.
+*/
+
+#define FTW_F 1 /* файл, не являющийся каталогом */
+#define FTW_D 2 /* каталог */
+#define FTW_DNR 3 /* каталог, который не доступен для чтения */
+#define FTW_NS 4 /* файл, информацию о котором невозможно получить с помощью stat */
+
+static char *fullpath; /* полный путь к каждому из файлов */
+static int /* возвращаем то, что вернула функция func() */
+myftw(char *pathname, Myfunc *func)
+{
+	int len;
+	fullpath = path_alloc(&len); /* выделить память для PATH_MAX+1 байт */
+	strncpy(fullpath, pathname, len); /* защита от */
+	fullpath[len-1] = 0; /* переполнения буфера */
+	return(dopath(func));
+}
+
+/*
+* Обход дерева каталогов, начиная с "fullpath". Если "fullpath" не является 
+* каталогом, для него вызывается lstat(), func() и затем выполняется возврат. 
+* Для каталогов производится рекурсивный вызов функции.
+*/
+static int /* возвращаем то, что вернула функция func() */
+dopath(Myfunc* func)
+{
+	struct stat statbuf;
+	struct dirent *dirp;
+	DIR *dp;
+	int ret;
+	char *ptr;
+	
+	if (lstat(fullpath, &statbuf) < 0) /* ошибка вызова функции stat */
+		return(func(fullpath, &statbuf, FTW_NS));
+	if (S_ISDIR(statbuf.st_mode) == 0) /* не каталог */
+return(func(fullpath, &statbuf, FTW_F));
+
+/*
+* Это каталог. Сначала вызовем функцию func(),
+* а затем обработаем все файлы в этом каталоге.
+*/
+
+if ((ret = func(fullpath, &statbuf, FTW_D)) != 0)
+return(ret);
+ptr = fullpath + strlen(fullpath); /* установить указатель */
+/* в конец fullpath */
+*ptr++ = ’/’;
+*ptr = 0;
+if ((dp = opendir(fullpath)) == NULL) /* каталог недоступен */
+return(func(fullpath, &statbuf, FTW_DNR));
+while ((dirp = readdir(dp)) != NULL) {
+if (strcmp(dirp->d_name, ".") == 0 ||
+strcmp(dirp->d_name, "..") == 0)
+continue; /* пропустить каталоги "." и ".." */
+strcpy(ptr, dirp->d_name); /* добавить имя после слэша */
+if ((ret = dopath(func)) != 0) /* рекурсия */
+break; /* выход по ошибке */
+}
+ptr[-1] = 0; /* стереть часть строки от слэша и до конца */
+if (closedir(dp) < 0)
+err_ret("невозможно закрыть каталог %s", fullpath);
+return(ret);
+}
+
+static int myfunc(const char *pathname, const struct stat *statptr, int type)
+{
+	switch (type) {
+	case FTW_F:
+		switch (statptr->st_mode & S_IFMT) {
+		case S_IFREG: nreg++; break;
+		case S_IFBLK: nblk++; break;
+		case S_IFCHR: nchr++; break;
+		case S_IFIFO: nfifo++; break;
+		case S_IFLNK: nslink++; break;
+		case S_IFSOCK: nsock++; break;
+		case S_IFDIR:
+			err_dump("признак S_IFDIR для %s", pathname);
+			/* каталоги должны иметь тип = FTW_D */
+	}
+	break;
+	case FTW_D:
+		ndir++;
+		break;
+	case FTW_DNR:
+		err_ret("закрыт доступ к каталогу %s", pathname);
+		break;
+	case FTW_NS:
+		err_ret("ошибка вызова функции stat для %s", pathname);
+		break;
+	default:
+		err_dump("неизвестный тип %d для файла %s", type, pathname);
+	}
+	return(0);
+}
+```
+
+## Функции chdir, fchdir и getcwd
+
+Для каждого процесса определен текущий рабочий каталог. Относительно этого каталога вычисляются все относительные пути (то есть пути, которые
+не начинаются с символа слэша). Когда пользователь входит в систему, текущим рабочим каталогом обычно становится каталог, указанный в шестом
+поле записи из файла /etc/passwd, – домашний каталог пользователя. Текущий рабочий каталог – это атрибут процесса, домашний каталог – атрибут
+пользователя. Процесс может изменитьтекущий рабочий каталог с помощью функции chdirили fchdir.
+
+```
+#include <unistd.h>
+int chdir(const char *pathname);
+int fchdir(int filedes); 
+
+Возвращают 0 в случае успеха, –1 в случае ошибки
+```
+
+ Пример использования функции chdir
+```
+#include "apue.h"
+int
+main(void)
+{
+if (chdir("/tmp") < 0)
+err_sys("ошибка вызова функции chdir");
+printf("каталог /tmp стал текущим рабочим каталогом\n");
+exit(0);
+}
+```
+
+Поскольку ядро хранит сведения о текущем рабочем каталоге, должен быть способ получить его текущее значение. К сожалению, ядро хранит не полный путь к каталогу, а некоторую иную информацию, такую как указатель
+на виртуальный узел (v-node) каталога. Чтобы определить абсолютный путь к текущему рабочему каталогу, нужна функция, которая будет перемещаться вверх по дереву каталогов, начиная
+с текущего («точка») и далее через специальные каталоги «точка - точка»,пока не достигнет корневого каталога. В каждом из промежуточных каталогов функция будет читать записи из файла каталога, пока не найдет название, которое соответствует индексному узлу предыдущего каталога. Повто
+ряя эту процедуру до тех пор, пока небудет достигнут корневой каталог, мы в результате получим абсолютный путь к текущему рабочему каталогу. 
+К счастью, такая функция уже существует.
+
+```
+#include <unistd.h>
+char *getcwd(char *buf, size_t size);
+
+Возвращает указатель на buf в случае успеха, NULLв случае ошибки
+```
+
+Пример использования функции getcwd
+
+```
+#include "apue.h"
+int main(void)
+{
+	char *ptr;
+	int size;
+	if (chdir("/usr/spool/uucppublic") < 0)
+		err_sys("ошибка вызова функции chdir");
+	ptr = path_alloc(&size); /* наша собственная функция */
+	if (getcwd(ptr, size) == NULL)
+		err_sys("ошибка вызова функции");
+	printf("cwd = %s\n", ptr);
+	exit(0);
+}
+```
