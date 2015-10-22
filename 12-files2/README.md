@@ -117,7 +117,9 @@ struct dirent {
 Пример: Рекурсивный обход деревакаталогов с подсчетом количества файлов по типам
 
 ```c
-#include "apue.h"
+#include <stdio.h>
+#include <errno.h>
+#include <string.h>
 #include <dirent.h>
 #include <limits.h>
 
@@ -218,9 +220,9 @@ static int dopath(Myfunc* func)
 	ptr[-1] = 0; /* стереть часть строки от слэша и до конца */
 
 	if (closedir(dp) < 0)
-		err_ret("невозможно закрыть каталог %s", fullpath);
-	
-	return(ret);
+		fprintf(stderr,"невозможно закрыть каталог %s: %s\n", fullpath, strerror(errno));
+
+	return ret;
 }
 
 static int myfunc(const char *pathname, const struct stat *statptr, int type)
@@ -235,7 +237,9 @@ static int myfunc(const char *pathname, const struct stat *statptr, int type)
 		case S_IFLNK: nslink++; break;
 		case S_IFSOCK: nsock++; break;
 		case S_IFDIR:
-			err_dump("признак S_IFDIR для %s", pathname);
+			fprintf(stderr, "признак S_IFDIR для %s: %s\n", pathname, strerror(errno));
+			fflush(stderr);
+			abort();
 			/* каталоги должны иметь тип = FTW_D */
 	}
 	break;
@@ -243,15 +247,17 @@ static int myfunc(const char *pathname, const struct stat *statptr, int type)
 		ndir++;
 		break;
 	case FTW_DNR:
-		err_ret("закрыт доступ к каталогу %s", pathname);
+		fprintf(stderr,"закрыт доступ к каталогу %s: %s\n", pathname, strerror(errno));
 		break;
 	case FTW_NS:
-		err_ret("ошибка вызова функции stat для %s", pathname);
+		fprintf(stderr,"ошибка вызова функции stat для %s: %s\n", pathname, strerror(errno));
 		break;
 	default:
-		err_dump("неизвестный тип %d для файла %s", type, pathname);
+		fprintf(stderr, "неизвестный тип %d для файла %s: %s\n", type, pathname, strerror(errno));
+		fflush(stderr);
+		abort();
 	}
-	return(0);
+	return 0;
 }
 ```
 
@@ -270,11 +276,18 @@ int fchdir(int filedes);
 Пример использования функции chdir
 
 ```c
-#include "apue.h"
+#include <stdio.h>
+#include <errno.h>
+#include <string.h>
+#include <stdlib.h>
+#include <unistd.h>
+
 int main(void)
 {
-	if (chdir("/tmp") < 0)
-		err_sys("ошибка вызова функции chdir");
+	if (chdir("/tmp") < 0) {
+		fprintf(stderr, "ошибка вызова функции chdir: %s\n", strerror(errno));
+		exit(1);
+        }
 	printf("каталог /tmp стал текущим рабочим каталогом\n");
 	exit(0);
 }
@@ -293,16 +306,25 @@ char *getcwd(char *buf, size_t size);
 Пример использования функции getcwd
 
 ```c
-#include "apue.h"
+#include <stdio.h>
+#include <errno.h>
+#include <string.h>
+#include <stdlib.h>
+#include <unistd.h>
+
 int main(void)
 {
 	char *ptr;
 	int size;
-	if (chdir("/usr/spool/uucppublic") < 0)
-		err_sys("ошибка вызова функции chdir");
+	if (chdir("/usr/spool/uucppublic") < 0) {
+		fprintf(stderr, "ошибка вызова функции chdir: %s\n", strerror(errno));
+		exit(1);
+        }
 	ptr = path_alloc(&size); /* наша собственная функция */
-	if (getcwd(ptr, size) == NULL)
-		err_sys("ошибка вызова функции");
+	if (getcwd(ptr, size) == NULL) {
+		fprintf(stderr, "ошибка вызова функции getcwd: %s\n", strerror(errno));
+		exit(1);
+        }
 	printf("cwd = %s\n", ptr);
 	exit(0);
 }
