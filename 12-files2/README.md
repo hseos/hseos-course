@@ -5,6 +5,7 @@
 
 ```c
 #include <sys/stat.h>
+
 int stat(const char *restrict pathname, struct stat *restrict buf);
 int fstat(int filedes, struct stat *buf);
 int lstat(const char *restrict pathname, struct stat restrict buf);
@@ -62,6 +63,7 @@ struct stat {
 
 ```c
 #include <unistd.h>
+
 int access(const char *pathname, int mode);
 ```
 
@@ -80,11 +82,13 @@ int access(const char *pathname, int mode);
 
 ```c
 #include <sys/stat.h>
+
 int mkdir(const char *pathname, mode_t mode); /* Возвращает 0 в случае успеха, –1 в случае ошибки*/
 ```
 
 ```c
 #include <unistd.h>
+
 int rmdir(const char *pathname); /* Возвращает 0 в случае успеха, –1 в случае ошибки */
 ```
 
@@ -156,8 +160,9 @@ int main(int argc, char *argv[])
 #define FTW_NS 4 /* файл, информацию о котором невозможно получить с помощью stat */
 
 static char *fullpath; /* полный путь к каждому из файлов */
-static int /* возвращаем то, что вернула функция func() */
-myftw(char *pathname, Myfunc *func)
+
+/* возвращаем то, что вернула функция func() */
+static int myftw(char *pathname, Myfunc *func)
 {
 	int len;
 	fullpath = path_alloc(&len); /* выделить память для PATH_MAX+1 байт */
@@ -171,8 +176,8 @@ myftw(char *pathname, Myfunc *func)
 * каталогом, для него вызывается lstat(), func() и затем выполняется возврат. 
 * Для каталогов производится рекурсивный вызов функции.
 */
-static int /* возвращаем то, что вернула функция func() */
-dopath(Myfunc* func)
+/* возвращаем то, что вернула функция func() */
+static int dopath(Myfunc* func)
 {
 	struct stat statbuf;
 	struct dirent *dirp;
@@ -256,9 +261,9 @@ static int myfunc(const char *pathname, const struct stat *statptr, int type)
 
 ```c
 #include <unistd.h>
+
 int chdir(const char *pathname);
 int fchdir(int filedes); 
-
 /* Возвращают 0 в случае успеха, –1 в случае ошибки */
 ```
 
@@ -280,8 +285,8 @@ int main(void)
 
 ```c
 #include <unistd.h>
-char *getcwd(char *buf, size_t size);
 
+char *getcwd(char *buf, size_t size);
 /* Возвращает указатель на buf в случае успеха, NULL в случае ошибки */
 ```
 
