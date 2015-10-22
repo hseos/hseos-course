@@ -16,19 +16,19 @@ int lstat(const char *restrict pathname, struct stat restrict buf);
 
 ```c
 struct stat {
-	mode_t st_mode; /* тип файла и режим (права доступа) */
-	ino_t st_ino; /* номер индексного узла */
-	dev_t st_dev; /* номер устройства (файловой системы) */
-	dev_t st_rdev; /* номер устройства для специальных файлов */
-	nlink_t st_nlink; /* количество ссылок */
-	uid_t st_uid; /* идентификатор пользователя владельца */
-	gid_t st_gid; /* идентификатор группы владельца */
-	off_t st_size; /* размер в байтах, для обычных файлов */
-	time_t st_atime; /* время последнего обращения к файлу */
-	time_t st_mtime; /* время последнего изменения файла */
-	time_t st_ctime; /* время последнего изменения флагов состояния файла */
-	blksize_t st_blksize; /* оптимальный размер блока ввода вывода */
-	blkcnt_t st_blocks; /* количество занятых дисковых блоков */
+    mode_t st_mode; /* тип файла и режим (права доступа) */
+    ino_t st_ino; /* номер индексного узла */
+    dev_t st_dev; /* номер устройства (файловой системы) */
+    dev_t st_rdev; /* номер устройства для специальных файлов */
+    nlink_t st_nlink; /* количество ссылок */
+    uid_t st_uid; /* идентификатор пользователя владельца */
+    gid_t st_gid; /* идентификатор группы владельца */
+    off_t st_size; /* размер в байтах, для обычных файлов */
+    time_t st_atime; /* время последнего обращения к файлу */
+    time_t st_mtime; /* время последнего изменения файла */
+    time_t st_ctime; /* время последнего изменения флагов состояния файла */
+    blksize_t st_blksize; /* оптимальный размер блока ввода вывода */
+    blkcnt_t st_blocks; /* количество занятых дисковых блоков */
 };
 ```
 ## Типы файлов
@@ -114,7 +114,7 @@ struct dirent {
 }
 ```
 
-Пример: Рекурсивный обход деревакаталогов с подсчетом количества файлов по типам
+Пример: Рекурсивный обход дерева каталогов с подсчетом количества файлов по типам
 
 ```c
 #include <stdio.h>
@@ -132,23 +132,24 @@ static int dopath(Myfunc *);
 
 static long nreg, ndir, nblk, nchr, nfifo, nslink, nsock, ntot;
 
-int main(int argc, char *argv[])
-{
-	int ret;
-	if (argc != 2)
-		err_quit("Использование: ftw <начальный_каталог>");
-	ret = myftw(argv[1], myfunc); /* выполняет всю работу */
-	ntot = nreg + ndir + nblk + nchr + nfifo + nslink + nsock;
-	if (ntot == 0)
-		ntot = 1;/* во избежание деления на 0; вывести 0 для всех счетчиков */
-	printf("обычные файлы = %7ld, %5.2f %%\n", nreg,nreg*100.0/ntot);
-	printf("каталоги = %7ld, %5.2f %%\n", ndir, ndir*100.0/ntot);
-	printf("специальные файлы блочных устройств = %7ld, %5.2f %%\n", nblk,nblk*100.0/ntot);
-	printf("специальные файлы символьных устройств = %7ld, %5.2f %%\n", nchr,nchr*100.0/ntot);
-	printf("FIFO = %7ld, %5.2f %%\n", nfifo,nfifo*100.0/ntot);
-	printf("символические ссылки = %7ld, %5.2f %%\n", nslink, nslink*100.0/ntot);
-	printf("сокеты = %7ld, %5.2f %%\n", nsock,nsock*100.0/ntot);
-	exit(ret);
+int main(int argc, char *argv[]) {
+    int ret;
+    if (argc != 2) {
+        fprintf(stderr, "Использование: ftw <начальный_каталог>\n");
+        exit(1);
+    }
+    ret = myftw(argv[1], myfunc); /* выполняет всю работу */
+    ntot = nreg + ndir + nblk + nchr + nfifo + nslink + nsock;
+    if (ntot == 0)
+        ntot = 1;/* во избежание деления на 0; вывести 0 для всех счетчиков */
+    printf("обычные файлы = %7ld, %5.2f %%\n", nreg,nreg*100.0/ntot);
+    printf("каталоги = %7ld, %5.2f %%\n", ndir, ndir*100.0/ntot);
+    printf("специальные файлы блочных устройств = %7ld, %5.2f %%\n", nblk,nblk*100.0/ntot);
+    printf("специальные файлы символьных устройств = %7ld, %5.2f %%\n", nchr,nchr*100.0/ntot);
+    printf("FIFO = %7ld, %5.2f %%\n", nfifo,nfifo*100.0/ntot);
+    printf("символические ссылки = %7ld, %5.2f %%\n", nslink, nslink*100.0/ntot);
+    printf("сокеты = %7ld, %5.2f %%\n", nsock,nsock*100.0/ntot);
+    exit(ret);
 }
 
 /*
@@ -164,13 +165,17 @@ int main(int argc, char *argv[])
 static char *fullpath; /* полный путь к каждому из файлов */
 
 /* возвращаем то, что вернула функция func() */
-static int myftw(char *pathname, Myfunc *func)
-{
-	int len;
-	fullpath = path_alloc(&len); /* выделить память для PATH_MAX+1 байт */
-	strncpy(fullpath, pathname, len); /* защита от */
-	fullpath[len-1] = 0; /* переполнения буфера */
-	return(dopath(func));
+static int myftw(char *pathname, Myfunc *func) {
+    int len = PATH_MAX + 1;
+    fullpath = malloc(len); /* выделить память для PATH_MAX+1 байт */
+    if (fullpath == NULL) {
+        fprintf(stderr, "не получается выделить память: %s\n", strerror(errno));
+        fflush(NULL);
+        abort();
+    }
+    strncpy(fullpath, pathname, len); /* защита от */
+    fullpath[len-1] = 0; /* переполнения буфера */
+    return(dopath(func));
 }
 
 /*
@@ -179,85 +184,83 @@ static int myftw(char *pathname, Myfunc *func)
 * Для каталогов производится рекурсивный вызов функции.
 */
 /* возвращаем то, что вернула функция func() */
-static int dopath(Myfunc* func)
-{
-	struct stat statbuf;
-	struct dirent *dirp;
-	DIR *dp;
-	int ret;
-	char *ptr;
-	
-	if (lstat(fullpath, &statbuf) < 0) /* ошибка вызова функции stat */
-		return(func(fullpath, &statbuf, FTW_NS));
-	if (S_ISDIR(statbuf.st_mode) == 0) /* не каталог */
-		return(func(fullpath, &statbuf, FTW_F));
+static int dopath(Myfunc* func) {
+    struct stat statbuf;
+    struct dirent *dirp;
+    DIR *dp;
+    int ret;
+    char *ptr;
+    
+    if (lstat(fullpath, &statbuf) < 0) /* ошибка вызова функции stat */
+        return func(fullpath, &statbuf, FTW_NS);
+    if (S_ISDIR(statbuf.st_mode) == 0) /* не каталог */
+        return func(fullpath, &statbuf, FTW_F);
 
-	/*
-	* Это каталог. Сначала вызовем функцию func(),
-	* а затем обработаем все файлы в этом каталоге.
-	*/
+    /*
+    * Это каталог. Сначала вызовем функцию func(),
+    * а затем обработаем все файлы в этом каталоге.
+    */
 
-	if ((ret = func(fullpath, &statbuf, FTW_D)) != 0)
-		return(ret);
+    if ((ret = func(fullpath, &statbuf, FTW_D)) != 0)
+        return ret;
 
-	ptr = fullpath + strlen(fullpath); /* установить указатель */
+    ptr = fullpath + strlen(fullpath); /* установить указатель */
 
-	/* в конец fullpath */
-	*ptr++ = ’/’;
-	*ptr = 0;
-	if ((dp = opendir(fullpath)) == NULL) /* каталог недоступен */
-		return(func(fullpath, &statbuf, FTW_DNR));
+    /* в конец fullpath */
+    *ptr++ = ’/’;
+    *ptr = 0;
+    if ((dp = opendir(fullpath)) == NULL) /* каталог недоступен */
+        return func(fullpath, &statbuf, FTW_DNR);
 
-	while ((dirp = readdir(dp)) != NULL) {
-		if (strcmp(dirp->d_name, ".") == 0 || strcmp(dirp->d_name, "..") == 0)
-			continue; /* пропустить каталоги "." и ".." */
-		strcpy(ptr, dirp->d_name); /* добавить имя после слэша */
+    while ((dirp = readdir(dp)) != NULL) {
+        if (strcmp(dirp->d_name, ".") == 0 || strcmp(dirp->d_name, "..") == 0)
+            continue; /* пропустить каталоги "." и ".." */
+        strcpy(ptr, dirp->d_name); /* добавить имя после слэша */
 
-		if ((ret = dopath(func)) != 0) /* рекурсия */
-			break; /* выход по ошибке */
-	}
+        if ((ret = dopath(func)) != 0) /* рекурсия */
+            break; /* выход по ошибке */
+    }
 
-	ptr[-1] = 0; /* стереть часть строки от слэша и до конца */
+    ptr[-1] = 0; /* стереть часть строки от слэша и до конца */
 
-	if (closedir(dp) < 0)
-		fprintf(stderr,"невозможно закрыть каталог %s: %s\n", fullpath, strerror(errno));
+    if (closedir(dp) < 0)
+        fprintf(stderr,"невозможно закрыть каталог %s: %s\n", fullpath, strerror(errno));
 
-	return ret;
+    return ret;
 }
 
-static int myfunc(const char *pathname, const struct stat *statptr, int type)
-{
-	switch (type) {
-	case FTW_F:
-		switch (statptr->st_mode & S_IFMT) {
-		case S_IFREG: nreg++; break;
-		case S_IFBLK: nblk++; break;
-		case S_IFCHR: nchr++; break;
-		case S_IFIFO: nfifo++; break;
-		case S_IFLNK: nslink++; break;
-		case S_IFSOCK: nsock++; break;
-		case S_IFDIR:
-			fprintf(stderr, "признак S_IFDIR для %s: %s\n", pathname, strerror(errno));
-			fflush(stderr);
-			abort();
-			/* каталоги должны иметь тип = FTW_D */
-	}
-	break;
-	case FTW_D:
-		ndir++;
-		break;
-	case FTW_DNR:
-		fprintf(stderr,"закрыт доступ к каталогу %s: %s\n", pathname, strerror(errno));
-		break;
-	case FTW_NS:
-		fprintf(stderr,"ошибка вызова функции stat для %s: %s\n", pathname, strerror(errno));
-		break;
-	default:
-		fprintf(stderr, "неизвестный тип %d для файла %s: %s\n", type, pathname, strerror(errno));
-		fflush(stderr);
-		abort();
-	}
-	return 0;
+static int myfunc(const char *pathname, const struct stat *statptr, int type) {
+    switch (type) {
+    case FTW_F:
+        switch (statptr->st_mode & S_IFMT) {
+        case S_IFREG: nreg++; break;
+        case S_IFBLK: nblk++; break;
+        case S_IFCHR: nchr++; break;
+        case S_IFIFO: nfifo++; break;
+        case S_IFLNK: nslink++; break;
+        case S_IFSOCK: nsock++; break;
+        case S_IFDIR:
+            fprintf(stderr, "признак S_IFDIR для %s: %s\n", pathname, strerror(errno));
+            fflush(NULL);
+            abort();
+            /* каталоги должны иметь тип = FTW_D */
+    }
+    break;
+    case FTW_D:
+        ndir++;
+        break;
+    case FTW_DNR:
+        fprintf(stderr,"закрыт доступ к каталогу %s: %s\n", pathname, strerror(errno));
+        break;
+    case FTW_NS:
+        fprintf(stderr,"ошибка вызова функции stat для %s: %s\n", pathname, strerror(errno));
+        break;
+    default:
+        fprintf(stderr, "неизвестный тип %d для файла %s: %s\n", type, pathname, strerror(errno));
+        fflush(NULL);
+        abort();
+    }
+    return 0;
 }
 ```
 
@@ -282,14 +285,13 @@ int fchdir(int filedes);
 #include <stdlib.h>
 #include <unistd.h>
 
-int main(void)
-{
-	if (chdir("/tmp") < 0) {
-		fprintf(stderr, "ошибка вызова функции chdir: %s\n", strerror(errno));
-		exit(1);
-        }
-	printf("каталог /tmp стал текущим рабочим каталогом\n");
-	exit(0);
+int main() {
+    if (chdir("/tmp") < 0) {
+        fprintf(stderr, "ошибка вызова функции chdir: %s\n", strerror(errno));
+        exit(1);
+    }
+    printf("каталог /tmp стал текущим рабочим каталогом\n");
+    exit(0);
 }
 ```
 
@@ -312,20 +314,19 @@ char *getcwd(char *buf, size_t size);
 #include <stdlib.h>
 #include <unistd.h>
 
-int main(void)
-{
-	char *ptr;
-	int size;
-	if (chdir("/usr/spool/uucppublic") < 0) {
-		fprintf(stderr, "ошибка вызова функции chdir: %s\n", strerror(errno));
-		exit(1);
-        }
-	ptr = path_alloc(&size); /* наша собственная функция */
-	if (getcwd(ptr, size) == NULL) {
-		fprintf(stderr, "ошибка вызова функции getcwd: %s\n", strerror(errno));
-		exit(1);
-        }
-	printf("cwd = %s\n", ptr);
-	exit(0);
+int main(void) {
+    char *ptr;
+    int size;
+    if (chdir("/usr/spool/uucppublic") < 0) {
+        fprintf(stderr, "ошибка вызова функции chdir: %s\n", strerror(errno));
+        exit(1);
+    }
+    ptr = path_alloc(&size); /* наша собственная функция */
+    if (getcwd(ptr, size) == NULL) {
+        fprintf(stderr, "ошибка вызова функции getcwd: %s\n", strerror(errno));
+        exit(1);
+    }
+    printf("cwd = %s\n", ptr);
+    exit(0);
 }
 ```
