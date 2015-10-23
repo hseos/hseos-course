@@ -8,7 +8,7 @@
 
 int stat(const char *restrict pathname, struct stat *restrict buf);
 int fstat(int filedes, struct stat *buf);
-int lstat(const char *restrict pathname, struct stat restrict buf);
+int lstat(const char *restrict pathname, struct stat *restrict buf);
 ```
 Функция stat возвращает структуру с информацией о файле, указанном в аргументе pathname. Функция fstat возвращает информацию об открытом файле, который определяется дескриптором filedes. 
 Функция lstat похожа на функцию stat, но когда ей передается имя символической ссылки, она возвращает сведения о самой символической ссылке, а не о файле, на который она ссылается.
