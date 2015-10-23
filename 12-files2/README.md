@@ -168,7 +168,7 @@ static char *fullpath; /* полный путь к каждому из файл�
 
 /* возвращаем то, что вернула функция func() */
 static int myftw(char *pathname, Myfunc *func) {
-    int len = PATH_MAX + 1;
+    size_t len = PATH_MAX + 1;
     fullpath = malloc(len); /* выделить память для PATH_MAX+1 байт */
     if (fullpath == NULL) {
         fprintf(stderr, "не получается выделить память: %s\n", strerror(errno));
@@ -318,13 +318,14 @@ char *getcwd(char *buf, size_t size);
 
 int main(void) {
     char *ptr;
+    size_t size = PATH_MAX + 1;
 
     if (chdir("/usr/spool/uucppublic") < 0) {
         fprintf(stderr, "ошибка вызова функции chdir: %s\n", strerror(errno));
         exit(1);
     }
 
-    if (!(ptr = malloc(PATH_MAX + 1))) {
+    if (!(ptr = malloc(size))) {
         fprintf(stderr, "ошибка выделения памяти: %s\n", strerror(errno));
         fflush(NULL);
         abort();
