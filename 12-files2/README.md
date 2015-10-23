@@ -318,16 +318,23 @@ char *getcwd(char *buf, size_t size);
 
 int main(void) {
     char *ptr;
-    int size;
+
     if (chdir("/usr/spool/uucppublic") < 0) {
         fprintf(stderr, "ошибка вызова функции chdir: %s\n", strerror(errno));
         exit(1);
     }
-    ptr = path_alloc(&size); /* наша собственная функция */
+
+    if (!(ptr = malloc(PATH_MAX + 1))) {
+        fprintf(stderr, "ошибка выделения памяти: %s\n", strerror(errno));
+        fflush(NULL);
+        abort();
+    }
+
     if (getcwd(ptr, size) == NULL) {
         fprintf(stderr, "ошибка вызова функции getcwd: %s\n", strerror(errno));
         exit(1);
     }
+
     printf("cwd = %s\n", ptr);
     exit(0);
 }
