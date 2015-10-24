@@ -28,7 +28,7 @@
 
 [Лекция](https://github.com/hseos/hseos-course/blob/master/00-lectures/os10.pdf)
 
-[Пример](/00-lectures/10-memory/dluser.c) использования функции из загруженной при помощи dlopen динамической библиотеки.
+[Пример](/00-lectures/10-memory/dluser.c) использования функции из загруженной при помощи dlopen разделяемой библиотеки.
 
 Справка по [dlopen](http://man7.org/linux/man-pages/man3/dlopen.3.html) и [dlsym](http://man7.org/linux/man-pages/man3/dlsym.3.html).
 
