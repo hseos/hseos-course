@@ -44,6 +44,4 @@
 
 Поясняющие картинки by corkami (кликабельно):
 
-[<img src="http://i.imgur.com/esWHRRe.png" width="300"/>](http://i.imgur.com/esWHRRe.png)
-
-[<img src="http://i.imgur.com/GZ5a0sb.png" width="300"/>](http://i.imgur.com/GZ5a0sb.png)
+[<img src="http://i.imgur.com/esWHRRe.png" width="400"/>](http://i.imgur.com/esWHRRe.png) [<img src="http://i.imgur.com/GZ5a0sb.png" width="400"/>](http://i.imgur.com/GZ5a0sb.png)
