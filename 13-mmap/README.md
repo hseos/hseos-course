@@ -37,3 +37,13 @@
 [Лекция](https://github.com/hseos/hseos-course/blob/master/00-lectures/os09.pdf)
 
 [Описание /proc/\[pid\]/maps](http://stackoverflow.com/questions/1401359/understanding-linux-proc-id-maps/1401595#1401595) и [справка по procfs](http://man7.org/linux/man-pages/man5/proc.5.html).
+
+# elf
+
+[man 5 elf](http://ru.manpages.org/elf/5)
+
+Поясняющие картинки by corkami (кликабельно):
+
+[<img src="http://i.imgur.com/esWHRRe.png" width="300"/>](http://i.imgur.com/esWHRRe.png)
+
+[<img src="http://i.imgur.com/GZ5a0sb.png" width="300"/>](http://i.imgur.com/GZ5a0sb.png)
