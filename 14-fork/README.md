@@ -10,4 +10,4 @@
 
 [man 2 getpid](http://ru.manpages.org/getpid/2)
 
-[man 2 exit](http://ru.manpages.org/exit/3)
+[man 3 exit](http://ru.manpages.org/exit/3)
