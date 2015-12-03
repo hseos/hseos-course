@@ -1,5 +1,7 @@
 # Нити (threads)
 
+[Лекция про потоки](https://github.com/hseos/hseos-course/blob/master/00-lectures/os18.pdf)
+
 Мы рассмотрим низкоуровневый интерфейс работы с нитями - POSIX Thread.
 
 Для использования POSIX Thread необходимо подключить заголовочный файл:
@@ -8,7 +10,7 @@
 ```
 
 При компиляции программы необходимо использовать опцию -pthread
-```c
+```
 g++ -std=gnu++14 -Wall -O2 -pthread prog.cpp -o prog
 ```
 
@@ -84,9 +86,16 @@ int pthread_join(pthread_t thread, void **retval);
 
 ## Thread-Local Storage
 
-Переменную, локальную для нити, можно определить с помощью нестандартного ключевого слова __thread. Например,
+Переменную, локальную для нити, можно определить с помощью
+
+1) нестандартного ключевого слова __thread. Например,
 ```c
-__thread volatile sig_atomic_t count;
+__thread int count;
+```
+
+2) начиная с g++-4.8 - также с помощью ключевого слова в стандарте c++11 [thread_local](http://en.cppreference.com/w/cpp/language/storage_duration)
+```cpp
+thread_local int count;
 ```
 
 С точки зрения программы на C или C++ это - глобальная переменная, доступная во всех функциях, находящихся в единице компиляции
@@ -99,3 +108,19 @@ __thread volatile sig_atomic_t count;
 
 Тем не менее, поскольку все нити работают в общем адресном пространства, можно передать адрес переменной, локальной для нити, в другие
 нити, и другие нити смогут читать и модифицировать эту переменную.
+
+При работе с глобальными переменными следует помнить о том состояниях гонок и атомарности.
+
+## Дополнительное чтение
+
+[Статья про pthreads](http://habrahabr.ru/post/248651/)
+
+[Статья про многопоточный доступ к базовым типам](http://habrahabr.ru/post/147099/)
+
+Статья про std::thread [часть 1](http://habrahabr.ru/post/182610/), [часть 2](http://habrahabr.ru/post/182626/)
+
+[Документация по std::thread](http://en.cppreference.com/w/cpp/thread)
+
+[man 7 pthreads](http://man7.org/linux/man-pages/man7/pthreads.7.html)
+
+[man 3 pthread_create](http://man7.org/linux/man-pages/man3/pthread_create.3.html) 
