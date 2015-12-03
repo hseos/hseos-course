@@ -3,19 +3,19 @@
 Мы рассмотрим низкоуровневый интерфейс работы с нитями - POSIX Thread.
 
 Для использования POSIX Thread необходимо подключить заголовочный файл:
-```
+```(c)
 #include <pthread.h>
 ```
 
 При компиляции программы необходимо использовать опцию -pthread
-```
+```(c)
 g++ -std=gnu++14 -Wall -O2 -pthread prog.cpp -o prog
 ```
 
 ## Основная функция нити
 
 Основная функция нити должна иметь вид
-```
+```(c)
 void *thread_func(void *ptr);
 ```
 
@@ -25,7 +25,7 @@ void *thread_func(void *ptr);
 Возвращаемое значение нити передается без изменений в ту нить, которая будет выполнять ожидание завершения нити.
 
 Нить завершается, когда завершается основная функция нити. Нить может быть завершена с помощью вызова функции
-```
+```(c)
 void pthread_exit(void *ptr);
 ```
 
@@ -36,7 +36,7 @@ void pthread_exit(void *ptr);
 
 Нить создается с помощью вызова `pthread_create`.
 
-```
+```(c)
 int pthread_create(pthread_t *thread,
                    const pthread_attr_t *attr,
                    void *(*start_routine) (void *),
@@ -67,7 +67,7 @@ int pthread_create(pthread_t *thread,
 
 Нити внутри процесса не образуют иерархии "отец-сын". Любая нить может ждать завершения выполнения любой другой нити.
 
-```
+```(c)
 int pthread_join(pthread_t thread, void **retval);
 ```
 
@@ -85,7 +85,7 @@ int pthread_join(pthread_t thread, void **retval);
 ## Thread-Local Storage
 
 Переменную, локальную для нити, можно определить с помощью нестандартного ключевого слова __thread. Например,
-```
+```(c)
 __thread volatile sig_atomic_t count;
 ```
 
