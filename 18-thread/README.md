@@ -1,6 +1,6 @@
 # Нити (threads)
 
-[Лекция про потоки](https://github.com/hseos/hseos-course/blob/master/00-lectures/os18.pdf)
+[Лекция про нити](https://github.com/hseos/hseos-course/blob/master/00-lectures/os18.pdf)
 
 Мы рассмотрим низкоуровневый интерфейс работы с нитями - POSIX Thread.
 
