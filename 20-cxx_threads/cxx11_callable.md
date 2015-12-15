@@ -244,7 +244,7 @@ int main(int argc, char *argv[])
 
   for (int i=0; i<num_threads; ++i) {
     const size_t from = i * nums_per_thread;
-    const size_t to = min((i+1) * nums_per_thread, input_data.size());
+    const size_t to = num_threads-1!=i ? (i+1)*nums_per_thread : input_data.size();
 
     // Обратите внимание:
     // 1. Аргумент типа const vector& упаковывается в std::cref(...)
