@@ -5,7 +5,7 @@
 int main()
 {
     int p[2];
-    char data[PIPE_BUF];
+    char data[8000];
     int count = 0;
 
     printf("PIPE_BUF: %d\n", PIPE_BUF);

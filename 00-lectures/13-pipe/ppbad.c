@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <sched.h>
 
 void dowork(int infd, int outfd)
 {
@@ -11,6 +12,7 @@ void dowork(int infd, int outfd)
         printf("%d %d\n", getpid(), v);
         ++v;
         write(outfd, &v, sizeof(v));
+        sched_yield();
     }
 }
 
