@@ -1,6 +1,5 @@
 /* -*- asm -*- */
 
-        .extern scanf
         .text
 _form1: .asciz  "%d"
         .text
@@ -14,7 +13,11 @@ readi32:
         leal    -4(%ebp), %eax
         pushl   %eax
         pushl   $_form1
+#ifdef __APPLE__
+        call    _scanf
+#else
         call    scanf
+#endif
         add     $8, %esp
         movl    %eax, %ecx
         movl    -4(%ebp), %eax
@@ -27,7 +30,6 @@ readi32x:
         popl    %ebp
         ret
 
-        .extern printf
         .text
 _form2: .asciz  "%d"
         .text
@@ -39,32 +41,42 @@ writei32:
 
         pushl   %eax
         pushl   $_form2
+#ifdef __APPLE__
+        call    _printf
+#else
         call    printf
+#endif
         add     $8, %esp
 
         movl    %ebp, %esp
         popl    %ebp
         ret
 
-        .extern putchar
         .align  16
         .global	nl
 nl:
         pushl   %ebp
         movl    %esp, %ebp
         pushl   $'\n'
+#ifdef __APPLE__
+        call    _putchar
+#else
         call    putchar
+#endif
         movl    %ebp, %esp
         popl    %ebp
         ret
 
         .text
         .align  16
-        .extern exit
         .global finish
 finish:
         pushl   $0
+#ifdef __APPLE__
+        call    _exit
+#else
         call    exit
+#endif
 
         .text
 _form3: .asciz  "%lld"
@@ -78,7 +90,11 @@ readi64:
         leal    -8(%ebp), %eax
         pushl   %eax
         pushl   $_form3
+#ifdef __APPLE__
+        call    _scanf
+#else
         call    scanf
+#endif
         add     $8, %esp
         movl    %eax, %ecx
         movl    -8(%ebp), %eax
@@ -103,7 +119,11 @@ writei64:
         pushl   %edx
         pushl   %eax
         pushl   $_form4
+#ifdef __APPLE__
+        call    _printf
+#else
         call    printf
+#endif
         add     $12, %esp
 
         movl    %ebp, %esp
