@@ -9,8 +9,9 @@ readi32:
         pushl   %ebp
         movl    %esp, %ebp
 
-        subl    $4, %esp
+        subl    $16, %esp
         leal    -4(%ebp), %eax
+
         pushl   %eax
         pushl   $_form1
 #ifdef __APPLE__
@@ -18,7 +19,6 @@ readi32:
 #else
         call    scanf
 #endif
-        add     $8, %esp
         movl    %eax, %ecx
         movl    -4(%ebp), %eax
         clc
@@ -46,7 +46,6 @@ writei32:
 #else
         call    printf
 #endif
-        add     $8, %esp
 
         movl    %ebp, %esp
         popl    %ebp
@@ -57,6 +56,7 @@ writei32:
 nl:
         pushl   %ebp
         movl    %esp, %ebp
+        push    %eax            // 16-byte alignment
         pushl   $'\n'
 #ifdef __APPLE__
         call    _putchar
@@ -71,6 +71,8 @@ nl:
         .align  16
         .global finish
 finish:
+        push    %eax            // 16-byte alignment
+        push    %eax
         pushl   $0
 #ifdef __APPLE__
         call    _exit
@@ -86,8 +88,9 @@ readi64:
         pushl   %ebp
         movl    %esp, %ebp
 
-        subl    $8, %esp
+        subl    $16, %esp
         leal    -8(%ebp), %eax
+        sub     $8, %esp
         pushl   %eax
         pushl   $_form3
 #ifdef __APPLE__
@@ -95,7 +98,6 @@ readi64:
 #else
         call    scanf
 #endif
-        add     $8, %esp
         movl    %eax, %ecx
         movl    -8(%ebp), %eax
         movl    -4(%ebp), %edx
@@ -116,6 +118,7 @@ writei64:
         pushl   %ebp
         movl    %esp, %ebp
 
+        sub     $12, %esp
         pushl   %edx
         pushl   %eax
         pushl   $_form4
@@ -124,7 +127,6 @@ writei64:
 #else
         call    printf
 #endif
-        add     $12, %esp
 
         movl    %ebp, %esp
         popl    %ebp
