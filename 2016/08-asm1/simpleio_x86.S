@@ -9,11 +9,13 @@ readi32:
         pushl   %ebp
         movl    %esp, %ebp
 
-        subl    $16, %esp
+        subl    $4, %esp
+        and     $-16, %esp
         leal    -4(%ebp), %eax
 
-        pushl   %eax
-        pushl   $_form1
+        sub     $16, %esp
+        mov     %eax, 4(%esp)
+        movl    $_form1, (%esp)
 #ifdef __APPLE__
         call    _scanf
 #else
@@ -38,9 +40,11 @@ _form2: .asciz  "%d"
 writei32:       
         pushl   %ebp
         movl    %esp, %ebp
+        and     $-16, %esp
 
-        pushl   %eax
-        pushl   $_form2
+        sub     $16, %esp
+        mov     %eax, 4(%esp)
+        movl    $_form2, (%esp)
 #ifdef __APPLE__
         call    _printf
 #else
@@ -56,8 +60,9 @@ writei32:
 nl:
         pushl   %ebp
         movl    %esp, %ebp
-        push    %eax            // 16-byte alignment
-        pushl   $'\n'
+        and     $-16, %esp
+        sub     $16, %esp
+        movl    $'\n', (%esp)
 #ifdef __APPLE__
         call    _putchar
 #else
@@ -71,9 +76,9 @@ nl:
         .align  16
         .global finish
 finish:
-        push    %eax            // 16-byte alignment
-        push    %eax
-        pushl   $0
+        and     $-16, %esp
+        sub     $16, %esp
+        movl    $0, (%esp)
 #ifdef __APPLE__
         call    _exit
 #else
@@ -87,12 +92,13 @@ _form3: .asciz  "%lld"
 readi64:
         pushl   %ebp
         movl    %esp, %ebp
-
-        subl    $16, %esp
-        leal    -8(%ebp), %eax
         sub     $8, %esp
-        pushl   %eax
-        pushl   $_form3
+        and     $-16, %esp
+
+        leal    -8(%ebp), %eax
+        sub     $16, %esp
+        mov     %eax, 4(%esp)
+        movl    $_form3, (%esp)
 #ifdef __APPLE__
         call    _scanf
 #else
@@ -117,11 +123,12 @@ _form4: .asciz  "%lld"
 writei64:       
         pushl   %ebp
         movl    %esp, %ebp
+        and     $-16, %esp
 
-        sub     $12, %esp
-        pushl   %edx
-        pushl   %eax
-        pushl   $_form4
+        sub     $16, %esp
+        mov     %edx, 8(%esp)
+        mov     %eax, 4(%esp)
+        movl    $_form4, (%esp)
 #ifdef __APPLE__
         call    _printf
 #else
