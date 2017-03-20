@@ -2,7 +2,7 @@
 
 [Лекция 21 - fork](../00-lectures/21-fork/21-fork.pdf)
 
-[Лекция 22 - fork](../00-lectures/22-exec/22-exec.pdf)
+[Лекция 22 - exec](../00-lectures/22-exec/22-exec.pdf)
 
 [man 2 fork](http://ru.manpages.org/fork/2)
 
