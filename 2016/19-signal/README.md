@@ -74,10 +74,10 @@ int pause(void);
 
 ## Ссылки
 
-- [Развернутый конспект] (./sem-signals.pdf)
+- [Развернутый конспект](sem-signals.pdf)
 - [Лекция 24](../00-lectures/24-signal1/24-signal1.pdf)
 - [Лекция 25](../00-lectures/25-signal2/25-signal2.pdf)
-- [Примеры лекции 24] (../00-lectures/24-signal1/)
-- [Примеры лекции 25] (../00-lectures/25-signal2/)
-- [man 7 signal] (http://ru.manpages.org/signal/7)
+- [Примеры лекции 24](../00-lectures/24-signal1/)
+- [Примеры лекции 25](../00-lectures/25-signal2/)
+- [man 7 signal](http://ru.manpages.org/signal/7)
 
