@@ -83,6 +83,13 @@ int getaddrinfo(const char *node, const char *service, const struct addrinfo *hi
     printf("IP = %s, PORT = %s\n", inet_ntoa(ain->sin_addr), ntohs(ain->sin_port));
 ```
 
+Для передачи результата работы `getaddrinfo` в системный вызов `connect` поля `ai_addrlen` и `ai_addr`
+передаются без изменений. Например,
+
+```
+    connect(fd, result->ai_addr, result->ai_addrlen);
+```
+
 После завершения работы со списком необходимо не забыть освободить занимаемую память
 с помощью `freeaddrinfo`:
 
