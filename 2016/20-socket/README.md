@@ -58,12 +58,12 @@ int getaddrinfo(const char *node, const char *service, const struct addrinfo *hi
     struct addrinfo hints = { .ai_family = AF_INET, .ai_socktype = SOCK_STREAM };
 ```
 
-Функция `getaddrinfo` возвращает 0 при успешном преобразовании и положительный код ошибки при ошибке.
+Функция `getaddrinfo` возвращает 0 при успешном преобразовании и ненулевой код ошибки при ошибке.
 Этот код ошибки можно передать в функцию `gai_strerror` для преобразования в строку для вывода сообщения об ошибке.
 
 ```
     int err = getaddrinfo(host, service, &hints, &result);
-    if (err > 0) {
+    if (err) {
         fprintf(stderr, "error: %s\n", gai_strerror(err));
     }
 ```
