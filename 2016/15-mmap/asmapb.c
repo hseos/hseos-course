@@ -9,7 +9,8 @@ int main()
             "add  %%edx, %%eax\n"
             "movl %%eax, %0"
             : "=g" (c)
-            : "g" (a), "g" (b));
+            : "g" (a - 3), "g" (b)
+            : "%eax", "%edx");
         printf("%d\n", c);
     }
 }
