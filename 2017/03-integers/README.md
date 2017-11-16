@@ -1,6 +1,6 @@
 # Лекционный материал
 
-Лекция 4 была посвящена целым числам. [Слайды лекции](https://github.com/hseos/hseos-course/blob/master/2016/00-lectures/04-integers/04-integers.pdf)
+Лекция 2 была посвящена целым числам. [Слайды лекции](https://github.com/hseos/hseos-course/blob/master/2017/00-lectures/02-integers/02-integers.pdf)
 
 Дополнительная [презентация (англ.)](http://www.cs.cmu.edu/afs/cs/academic/class/15213-f15/www/lectures/02-03-bits-ints.pdf)
 
