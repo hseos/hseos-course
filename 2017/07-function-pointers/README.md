@@ -374,6 +374,6 @@ void timer_handler(void *user)
 
 // основная программа
     struct TimerContext cntx = { /* задаем доп. информацию для обработчика тайм-аута */ };
-    set_timer(timer_handler, cntx); // передаем ее в обработчик, когда он будет вызван
+    set_timer(timer_handler, &cntx); // передаем ее в обработчик, когда он будет вызван
 ```
 
