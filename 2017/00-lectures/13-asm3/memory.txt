@@ -1,0 +1,76 @@
+        .data
+A:      .int    0
+
+        .text
+        mov     A, %eax     // %eax = A // direct addressing
+
+        mov     (%esi), %edx    // %edx = *%esi
+
+        // OFFSET(BASE,INDEX,SCALE) : OFFSET + BASE + INDEX * SCALE
+
+        // OFFSET или ADDR
+        mov     A, %eax
+
+        // (BASE)
+        mov     (%esi), %edx
+
+        // char ArrChar[N]
+        // %eax = ArrChar[%edi]
+ArrChar:    .space  20, 0
+        movsbl     ArrChar(,%edi,), %eax
+
+        // int ArrInt[]
+ArrInt: .space  20, 0
+        mov     ArrInt(,%edi,4), %eax // scale - 1, 2, 4, 8
+
+        // unsigned char *p
+        // short i
+        // %eax = p[i]
+        mov     p, %eax
+        movswl  i, %ebx
+        movzbl  (%eax, %ebx), %eax
+
+        // int *p
+        // int i
+        // %eax = p[i]
+        mov     p, %eax
+        mov     i, %ebx
+        mov     (%eax, %ebx, 4), %eax   // %eax + %ebx * 4
+
+/*
+struct A
+{
+        int f1;   // 0
+        int f2;   // 4
+};
+*/
+        // struct A *p
+        // p->f2
+        mov     p, %eax
+        mov     4(%eax), %eax
+
+/*
+struct A
+{
+        long long f1;
+        unsigned short f2[10];
+};
+*/
+        // struct A *p
+        // p->f2[i]
+        mov     p, %eax
+        mov     i, %ebx
+        movzwl  8(%eax, %ebx, 2), %eax
+
+        // load effective address
+        lea     8(%eax, %ebx, 2), %eax
+        movzwl  (%eax), %eax
+
+
+        lea     -1024(%eax, %eax, 8), %eax // %eax*9 - 1024
+
+        //int *p
+        // --p
+        // p в eax
+        sub $4, %eax
+        lea -4(%eax), %eax
