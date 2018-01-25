@@ -1,0 +1,170 @@
+
+
+    int a, b;
+    if (a > b) {
+        oper
+    }
+
+
+        mov     a, %eax
+        cmp     b, %eax     // %eax - b
+        jle     L1
+        // oper...
+L1:
+
+    unsigned a, b;
+    if (a > b) {
+        oper
+    }
+
+        mov     a, %eax
+        cmp     b, %eax
+        jbe     L1
+        // oper...
+L1:
+
+
+
+    unsigned a, b;
+    if (a > b) {
+        oper1
+    } else {
+        oper2
+    }
+
+
+        mov     a, %eax
+        cmp     b, %eax
+        jbe     L1
+        // oper1
+        jmp     L2
+L1:     // oper2
+
+L2:
+
+
+    unsigned a, b;
+    while (a < b) {
+        oper
+    }
+
+
+        mov     a, %eax
+        cmp     b, %eax
+        jae     L1
+
+L2:
+        // oper
+        mov     a, %eax
+        cmp     b, %eax
+        jb      L2
+
+L1:
+
+    if (a < b) {
+        do {
+            //oper
+        } while (a < b);
+    }
+
+
+    if (a < b && c < d) {
+    }
+
+
+        mov     a, %eax
+        cmp     b, %eax
+        jae     L1
+        mov     c, %eax
+        cmp     d, %eax
+        jae     L1
+
+        // oper
+
+L1:
+
+
+
+    if (a < b || c < d) {
+    }
+
+
+        mov     a, %eax
+        cmp     b, %eax
+        jb      L2
+        mov     c, %eax
+        cmp     d, %eax
+        jae     L1
+L2:
+        // oper
+
+L1:
+
+
+
+
+
+
+    switch (x) {
+    case 100:
+        // oper1
+        break;
+    case 200:
+        // oper2
+        break;
+    }
+
+    if (x == 100) {
+    } else if (x == 200) {
+    } else {
+    }
+
+
+
+    int x;
+    switch (x) {
+        case 5:
+            // oper5
+            break;
+        case 6:
+            // oper6
+            break;
+        case 8:
+            // oper8
+            break;
+        default:
+            // operd
+            break;
+    }
+Lout:
+
+        mov     x, %eax
+        sub     $5, %eax
+        cmp     $3, %eax
+        ja      Ld
+        mov     Tab(,%eax,4), %eax
+        jmp     *%eax
+
+Tab:    .int    L5, L6, Ld, L8
+
+L5:     // oper5
+        jmp     Lout
+L6:     // oper6
+        jmp     Lout
+L8:     // oper8
+        jmp     Lout
+
+Ld:     // operd
+        jmp     Lout
+
+Lout:
+
+
+
+        // cmovCC
+
+        mov     a, %edx
+        xor     %eax, %eax
+        cmp     b, %edx         // a - b
+        cmovge  $3, %eax
+        // %eax = (a >= b)?3:0
