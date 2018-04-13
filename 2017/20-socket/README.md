@@ -96,3 +96,17 @@ int getaddrinfo(const char *node, const char *service, const struct addrinfo *hi
 ```
     freeaddrinfo(result);
 ```
+
+### Настройки серверного порта
+
+Чтобы программу, открывающую сокет в режиме прослушивания, можно было запустить немедленно после завершения
+с тем же самым номером прослушивающего порта, в программу должна быть добавлена следующая последовательность
+вызовов, настраивающих опции сокета:
+
+```
+    int val = 1;
+    setsockopt(lfd, SOL_SOCKET, SO_REUSEADDR, &val, sizeof(val));
+    setsockopt(lfd, SOL_SOCKET, SO_REUSEPORT, &val, sizeof(val));
+```
+
+Эта последовательность должна находиться после системного вызова `socket`, но до системного вызова `bind`.
