@@ -226,7 +226,10 @@ void *malloc(size_t size)
         return NULL;
     }
     // добавляем размер служебной структуры
-    uintptr_t fullsize = size + sizeof(struct MemBlock);
+    uintptr_t fullsize;
+    if (__builtin_add_overflow((uintptr_t) size, (uintptr_t) sizeof(struct MemBlock), &fullsize)) {
+        return NULL;
+    }
 
     if (!heap_head) {
         // получаем текущий адрес конца программы и выравниваем его вверх
