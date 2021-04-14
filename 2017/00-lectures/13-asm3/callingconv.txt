@@ -1,0 +1,173 @@
+int func(int a, char b)
+{
+    return ...;
+}
+
+int main()
+{
+    int z = func(10, x);
+}
+
+// соглашения о вызовах (calling conventions)
+// Unix Calling Conventions (Itanium ABI)
+// x86
+// return value:
+// %eax - для <= 32 битных значений
+// %eax:%edx - для long long
+struct Foo
+{
+};
+
+struct Foo func();
+
+преобразовывается
+void func(struct Foo *retptr);
+
+// scratch registers
+        call    writei32    // %eax, %edx, %ecx
+// callee-saved registers
+// %ebx, %esi, %edi, %ebp, %esp
+
+mysub:
+        push    %ebx
+        push    %esi
+        push    %edi
+        push    %ebp
+
+        ...
+
+        pop     %ebp
+        pop     %edi
+        pop     %esi
+        pop     %ebx
+        ret
+
+
+int func(int a, char b)
+{
+    return ...;
+}
+
+unsigned char x;
+int main()
+{
+    int z = func(10, x);
+}
+
+        //pushb   x
+        //pushl   x
+        movzbl  x, %eax
+        push    %eax
+        push    $10
+        call    func
+        add     $8, %esp
+
+
+        sub     $8, %esp
+        mov     $10, (%esp)
+        movzbl  x, %eax
+        mov     %eax, 4(%esp)
+        call    func
+        add     $8, %esp
+
+        // for MacOS
+        sub     $16, %esp        
+        mov     $10, (%esp)
+        movzbl  x, %eax
+        mov     %eax, 4(%esp)
+        call    func
+        add     $16, %esp
+
+
+int func(int a, char b)
+{
+    return ...;
+}
+
+/*
+        b
+        a
+        RETADDR <- %esp
+*/
+func:
+        mov     4(%esp), %eax   // a
+        mov     8(%esp), %ecx   // b
+
+
+func:
+        push    %ebx
+        push    %esi
+/*
+        b
+        a
+        RETADDR
+        saved EBX
+        saved ESI <- %esp
+*/
+        mov     12(%esp), %eax  // a
+        mov     16(%esp), %ebx  // b
+// -fomit-frame-pointer
+
+
+// stack frame
+// standard prologue
+func:
+        push    %ebp
+        mov     %esp, %ebp
+/*
+        b
+        a
+        RETADDR
+        saved EBP <- %esp, %ebp
+*/
+        mov     8(%ebp), %eax // a
+        mov     12(%ebp), %ecx // b
+
+// standard epilogue
+        mov     %ebp, %esp
+        pop     %ebp
+        ret
+
+
+func:
+        push    %ebp
+        mov     %esp, %ebp
+        push    %ebx
+        push    %esi
+        push    %edi
+/*
+        b
+        a
+        RETADDR
+        saved EBP <- %ebp
+        saved EBX  -4
+        saved ESI  -8
+        saved EDI  -12 <- %esp
+*/
+        // allocate local variable int x;
+        sub     $4, %esp
+/*
+        b
+        a
+        RETADDR
+        saved EBP <- %ebp
+        saved EBX  -4
+        saved ESI  -8
+        saved EDI  -12 <- %esp
+        local int x -16
+*/
+        mov     $0, -16(%ebp)
+
+        mov     (%ebp), %eax
+        mov     (%eax), %eax
+        mov     (%eax), %eax
+
+        ...
+
+        lea     -12(%ebp), %esp
+        pop     %edi
+        pop     %esi
+        pop     %ebx
+        pop     %ebp
+        ret
+
